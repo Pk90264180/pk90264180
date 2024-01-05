@@ -22,6 +22,6 @@
 - Other: Git, RESTful APIs
 
 ### Let's Connect!
-- [LinkedIn](https://www.linkedin.com/in/pushpendra-kushwaha-225544207/){:target="_blank"}
+- [LinkedIn](https://www.linkedin.com/in/pushpendra-kushwaha-225544207/)
 
-Feel free to explore my repositories and reach out if you have any questions or just want to chat. 😊
+- Feel free to explore my repositories and reach out if you have any questions or just want to chat. 😊
