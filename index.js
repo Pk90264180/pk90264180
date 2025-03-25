@@ -92,3 +92,9 @@ function scheduleCommits() {
 
 // Start scheduling
 scheduleCommits();
+
+// Make one commit immediately on startup
+(async () => {
+  console.log("🚀 Making an immediate commit on startup...");
+  await makeCommit();
+})();
