@@ -4,7 +4,7 @@ const schedule = require("node-schedule");
 
 // Git configuration
 const REPO_PATH = "."; // Use current directory
-const BRANCH_NAME = "auto-commits";
+const BRANCH_NAME = "improvements-md";
 const git = simpleGit(REPO_PATH);
 
 // Random commit messages
