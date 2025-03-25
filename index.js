@@ -1,6 +1,7 @@
 const simpleGit = require("simple-git");
 const fs = require("fs");
 const schedule = require("node-schedule");
+require("dotenv").config();
 
 // Git configuration
 const REPO_PATH = "."; // Use current directory
@@ -22,26 +23,31 @@ const commitMessages = [
 
 // Function to make a commit
 async function makeCommit() {
-  try {
-    // Random commit message
-    const commitMessage = commitMessages[Math.floor(Math.random() * commitMessages.length)];
-
-    // Modify a dummy file (avoid detection)
-    const filePath = "notes.txt";
-    const content = `Commit at ${new Date().toISOString()}\n`;
-    fs.appendFileSync(filePath, content);
-
-    // Git commands
-    await git.checkout(BRANCH_NAME);
-    await git.add(filePath);
-    await git.commit(commitMessage);
-    await git.push("origin", BRANCH_NAME);
-
-    console.log(`✅ Committed: ${commitMessage}`);
-  } catch (error) {
-    console.error("❌ Error committing:", error);
+    try {
+      // Ensure Git identity is set (Only required once)
+      await git.raw(["config", "--global", "user.name", process.env.GITHUB_USER_NAME]);
+      await git.raw(["config", "--global", "user.email", process.env.GITHUB_EMAIL]);
+  
+      // Random commit message
+      const commitMessage = commitMessages[Math.floor(Math.random() * commitMessages.length)];
+  
+      // Modify a dummy file (avoid detection)
+      const filePath = "notes.txt";
+      const content = `Commit at ${new Date().toISOString()}\n`;
+      fs.appendFileSync(filePath, content);
+  
+      // Git commands
+      await git.checkout(BRANCH_NAME);
+      await git.add(filePath);
+      await git.commit(commitMessage);
+      await git.push("origin", BRANCH_NAME);
+  
+      console.log(`✅ Committed: ${commitMessage}`);
+    } catch (error) {
+      console.error("❌ Error committing:", error);
+    }
   }
-}
+  
 
 // Function to execute multiple commits (5 to 8 times)
 async function makeMultipleCommits() {
