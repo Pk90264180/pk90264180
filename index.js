@@ -33,7 +33,16 @@ async function makeCommit() {
       if (!isRepo) {
         console.log("⚠️ Not a Git repository. Initializing...");
         await git.init();
-        await git.addRemote("origin", "https://github.com/Pk90264180/pk90264180.git"); // 🔹 Set your actual repo URL
+        await git.addRemote("origin", process.env.GIT_REMOTE_URL);
+        await git.fetch();
+      }
+  
+      // Ensure remote exists
+      const remotes = await git.getRemotes();
+      const hasOrigin = remotes.some(remote => remote.name === "origin");
+      if (!hasOrigin) {
+        console.log("⚠️ No remote 'origin' found. Adding remote...");
+        await git.addRemote("origin", process.env.GIT_REMOTE_URL);
         await git.fetch();
       }
   
@@ -45,7 +54,11 @@ async function makeCommit() {
         await git.checkoutLocalBranch(BRANCH_NAME);
       }
   
-      // Modify a dummy file (avoid detection)
+      // Pull latest changes to avoid conflicts
+      console.log("🔄 Pulling latest changes...");
+      await git.pull("origin", BRANCH_NAME);
+  
+      // Modify a dummy file
       const filePath = "notes.txt";
       const content = `Commit at ${new Date().toISOString()}\n`;
       fs.appendFileSync(filePath, content);
@@ -60,6 +73,7 @@ async function makeCommit() {
       console.error("❌ Error committing:", error);
     }
   }
+  
   
 
 // Function to execute multiple commits (5 to 8 times)
