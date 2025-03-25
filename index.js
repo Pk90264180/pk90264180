@@ -28,8 +28,22 @@ async function makeCommit() {
       await git.raw(["config", "--global", "user.name", process.env.GITHUB_USER_NAME]);
       await git.raw(["config", "--global", "user.email", process.env.GITHUB_EMAIL]);
   
-      // Random commit message
-      const commitMessage = commitMessages[Math.floor(Math.random() * commitMessages.length)];
+      // Check if this is a Git repo
+      const isRepo = await git.checkIsRepo();
+      if (!isRepo) {
+        console.log("⚠️ Not a Git repository. Initializing...");
+        await git.init();
+        await git.addRemote("origin", "https://github.com/Pk90264180/pk90264180.git"); // 🔹 Set your actual repo URL
+        await git.fetch();
+      }
+  
+      // Ensure branch exists and checkout
+      try {
+        await git.checkout(BRANCH_NAME);
+      } catch (error) {
+        console.log(`⚠️ Branch ${BRANCH_NAME} not found. Creating it...`);
+        await git.checkoutLocalBranch(BRANCH_NAME);
+      }
   
       // Modify a dummy file (avoid detection)
       const filePath = "notes.txt";
@@ -37,12 +51,11 @@ async function makeCommit() {
       fs.appendFileSync(filePath, content);
   
       // Git commands
-      await git.checkout(BRANCH_NAME);
       await git.add(filePath);
-      await git.commit(commitMessage);
+      await git.commit(commitMessages[Math.floor(Math.random() * commitMessages.length)]);
       await git.push("origin", BRANCH_NAME);
   
-      console.log(`✅ Committed: ${commitMessage}`);
+      console.log("✅ Successfully committed and pushed!");
     } catch (error) {
       console.error("❌ Error committing:", error);
     }
