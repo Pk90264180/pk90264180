@@ -5,7 +5,7 @@ require("dotenv").config();
 
 // Git configuration
 const REPO_PATH = "."; // Use current directory
-const BRANCH_NAME = "improvements-md";
+const BRANCH_NAME = process.env.BRANCH_NAME;
 const git = simpleGit(REPO_PATH);
 
 // Random commit messages
